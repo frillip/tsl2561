@@ -1,30 +1,11 @@
-.. image:: https://landscape.io/github/sim0nx/tsl2561/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/sim0nx/tsl2561/master
-   :alt: Code Health
-
-.. image:: https://badge.fury.io/py/tsl2561.svg
-   :target: https://badge.fury.io/py/tsl2561
-   :alt: PyPI version
-
-
 Python library for TSL2561
 ==========================
-  This is python library for working with Adafruit's TSL2561 luminosity sensor.
+  This is python library for working with Adafruit's TSL2561 luminosity sensor, but does not depend on the Adafruit IO libraries
 
 Requirements
 ------------
   - Python 2.7 or Python 3.x
-  - Adafruit GPIO library (https://github.com/adafruit/Adafruit_Python_GPIO)
-  - Adafruit PureIO library (https://github.com/adafruit/Adafruit_Python_PureIO)
-
-Installation
-------------
-Install the latest version using pip:
-
-.. code-block:: bash
-
-  pip install tsl2561
-
+  - smbus2
 
 Example
 -------
@@ -44,6 +25,9 @@ Copyright (c) 2015 Kevin Townsend for Adafruit Industries.
 All rights reserved.
 
 Copyright (c) 2016-present, Georges Toth
+All rights reserved.
+
+Copyright (c) 2020-present, Phil Martin
 All rights reserved.
 
 
