@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
-from Adafruit_GPIO import I2C
+import smbus2
 from tsl2561.constants import *  # pylint: disable=unused-wildcard-import
 
 
@@ -17,23 +17,18 @@ products from Adafruit!
 Code ported from Adafruit Arduino library,
 commit ced9f731da5095988cd66158562c2fde659e0510:
 https://github.com/adafruit/Adafruit_TSL2561
+
+This version no longer depends on the Adafruit GPIO/PureIO libraries
+and only on the smbus2 library.
 """
 
-__author__ = 'Georges Toth <georges@trypill.org>'
-__credits__ = ['K.Townsend (Adafruit Industries)', 'Yongwen Zhuang (zYeoman)', 'miko (mikostn)', 'Simon Gansen (theFork)']
+__author__ = 'Phil Martin (frillip)'
+__credits__ = ['K.Townsend (Adafruit Industries)', 'Yongwen Zhuang (zYeoman)', 'miko (mikostn)', 'Simon Gansen (theFork)', 'Georges Toth <georges@trypill.org>']
 __license__ = 'BSD'
-__version__ = 'v3.2'
+__version__ = 'v1.0'
 
 """HISTORY
-v3.3 - Fix import bug in PY3
-v3.2 - Cleanup readme, setup.py
-v3.1 - Fix import
-v3.0 - Port to Python 3.x
-v2.2 - Merge PR #4 regarding wrong use of integration time
-v2.1 - Minor adaptations required by latest Adafruit pyton libraries
-v2.0 - Rewrote driver for Adafruit_Sensor and Auto-Gain support, and
-       added lux clipping check (returns 0 lux on sensor saturation)
-v1.0 - First release (previously TSL2561)
+v1.0 - First release (based on sim0nx's original arduino port of TSL2561)
 """
 
 
@@ -51,7 +46,7 @@ class TSL2561(object):
         if busnum is None:
             self.busnum = 1
 
-        self.i2c = I2C.get_i2c_device(self.address, busnum=busnum)
+        self.i2c = smbus2.SMBus(self.busnum)
 
         self.debug = debug
         self.integration_time = integration_time
@@ -71,7 +66,7 @@ class TSL2561(object):
         doing anything else)
         '''
         # Make sure we're actually connected
-        x = self.i2c.readU8(TSL2561_REGISTER_ID)
+        x = self.i2c.read_byte_data(self.address, TSL2561_REGISTER_ID)
 
         if not x & 0x0A:
             raise Exception('TSL2561 not found!')
@@ -86,12 +81,12 @@ class TSL2561(object):
 
     def enable(self):
         '''Enable the device by setting the control bit to 0x03'''
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
+        self.i2c.write_byte_data(self.address, TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
                         TSL2561_CONTROL_POWERON)
 
     def disable(self):
         '''Disables the device (putting it in lower power sleep mode)'''
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
+        self.i2c.write_byte_data(self.address, TSL2561_COMMAND_BIT | TSL2561_REGISTER_CONTROL,
                         TSL2561_CONTROL_POWEROFF)
 
     @staticmethod
@@ -112,11 +107,11 @@ class TSL2561(object):
         TSL2561.delay(self.delay_time)
 
         # Reads a two byte value from channel 0 (visible + infrared)
-        broadband = self.i2c.readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
+        broadband = self.i2c.read_word_data(self.address, TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
                                      TSL2561_REGISTER_CHAN0_LOW)
 
         # Reads a two byte value from channel 1 (infrared)
-        ir = self.i2c.readU16(TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
+        ir = self.i2c.read_word_data(self.address, TSL2561_COMMAND_BIT | TSL2561_WORD_BIT |
                               TSL2561_REGISTER_CHAN1_LOW)
 
         # Turn the device off to save power
@@ -133,7 +128,7 @@ class TSL2561(object):
         self.integration_time = integration_time
 
         # Update the timing register
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
+        self.i2c.write_byte_data(self.address, TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
                         self.integration_time | self.gain)
 
         # Turn the device off to save power
@@ -149,7 +144,7 @@ class TSL2561(object):
         self.gain = gain
 
         # Update the timing register
-        self.i2c.write8(TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
+        self.i2c.write_byte_data(self.address, TSL2561_COMMAND_BIT | TSL2561_REGISTER_TIMING,
                         self.integration_time | self.gain)
 
         # Turn the device off to save power
