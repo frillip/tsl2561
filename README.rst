@@ -1,6 +1,6 @@
 Python library for TSL2561
 ==========================
-  This is python library for working with Adafruit's TSL2561 luminosity sensor, but does not depend on the Adafruit IO libraries
+  This is python library for working with Adafruit's TSL2561 luminosity sensor, but does not depend on the Adafruit IO libraries, only smbus2.
 
 Requirements
 ------------

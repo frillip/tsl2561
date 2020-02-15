@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 import sys
 import os
 
-VERSION = (3, 3)
+VERSION = (1, 0)
 __version__ = VERSION
 __versionstr__ = '.'.join(map(str, VERSION))
 
@@ -13,23 +13,24 @@ long_description = f.read().strip()
 f.close()
 
 install_requires = [
+"smbus2",
 ]
 
 
 setup(
-    name = 'tsl2561',
-    description = "Driver for the TSL2561 digital luminosity (light) sensors",
+    name = 'tsl2561-smbus2',
+    description = "SMBus2 driver for the TSL2561 digital luminosity (light) sensors",
     license = "BSD",
-    url = "https://github.com/sim0nx/tsl2561",
-    download_url = "https://github.com/sim0nx/tsl2561",
+    url = "https://github.com/frillip/tsl2561",
+    download_url = "https://github.com/frillip/tsl2561",
     long_description = long_description,
     version = __versionstr__,
-    author = "Georges Toth",
-    author_email = "georges@trypill.org",
+    author = "Phil Martin",
+    author_email = "root@frillip.com",
     packages = find_packages(
         where='.',
     ),
-    keywords = ['TSL2561'],
+    keywords = ['TSL2561', 'smbus2'],
     classifiers = [
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: BSD License",
